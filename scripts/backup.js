@@ -1,0 +1,11 @@
+import { DatabaseSync, backup } from 'node:sqlite';
+import { mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+const path = process.env.DATABASE_PATH || './data/prasittichoke.db';
+const folder = join(dirname(path), 'backups');
+mkdirSync(folder, { recursive: true });
+const destination = join(folder, `prasittichoke-${new Date().toISOString().replaceAll(':', '-')}.db`);
+const db = new DatabaseSync(path, { readOnly: true });
+await backup(db, destination);
+db.close();
+console.log(destination);
